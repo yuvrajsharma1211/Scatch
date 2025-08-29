@@ -1,14 +1,20 @@
-const mongoose=require('mongoose');
+const mongoose = require("mongoose");
+const dbgr = require("debug")("development:mongoose");
 
+const mongoURI = process.env.MONGODB_URI; // Full URI from Render env vars
 
-const dbgr= require("debug")("development:mongoose")
+mongoose
+  .connect(mongoURI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    // You can specify dbName here if not included in URI
+    dbName: "scatch",
+  })
+  .then(() => {
+    dbgr("✅ Connected to MongoDB Atlas");
+  })
+  .catch((err) => {
+    dbgr("❌ MongoDB connection error:", err);
+  });
 
-mongoose.connect(`${process.env.MONGODB_URI}/scatch`)
-.then(function(){
-    dbgr("Connected");
-})
-.catch(function(err){
-    dbgr("Error", err);
-})
-
-module.exports= mongoose.connection;
+module.exports = mongoose.connection;
